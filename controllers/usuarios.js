@@ -8,18 +8,30 @@ const Usuario = require('../models/usuario')
 const { generarJWT } = require("../helpers/jwt");
 
 const getUsuarios = async (req, res) => {
+    const desde = Number( req.query.desde ) || 0;
+    const cantidad = Number( req.query.cantidad ) || 10;
+    
+    //Primise.all() se la utiliza para ejecutar en bloque diferentes 
+    //funciones que se necesita el valor para la ejecucion del siguiente codigo (async-await)
+    const [usuarios, total] = await Promise.all([
+        Usuario.find({}, 'nombre email role google img')
+            .skip( desde )
+            .limit( cantidad ),
+        Usuario.count()
+    ]);
 
-    const usuarios = await Usuario.find({}, 'nombre email role google');
-
+    
     res.json({
         ok: true,
         usuarios,
-        id: req.id //se puede utlizar porque en el middleware validar-jwt se le asigna este atributo
+        total
+        //id: req.idAuthenticatedUser //se puede utlizar porque en el middleware validar-jwt se le asigna este atributo
+
     });
 }
 
 const createUsuario = async (req, res = response ) => {
-
+    
         const { nombre, email, password } = req.body;
 
     try {
@@ -37,8 +49,8 @@ const createUsuario = async (req, res = response ) => {
         const salt = bcrypt.genSaltSync();//Genera un num al azar
         usuario.password = bcrypt.hashSync( password, salt );
         await usuario.save();
-
-         //Generar el TOKEN - JWT
+        
+        //Generar el TOKEN - JWT
         const token = await generarJWT( usuario.id );
         
         res.json({
@@ -134,3 +146,22 @@ module.exports = {
     updateUsuario,
     deleteUsuario,
 };
+
+
+//metodo para crear usarios se debe tener en cuenta los if del crearUsuario
+/*const r = function(res = response){
+    let req ={ body: {
+        nombre: '', 
+        email:'', 
+        password: '',
+        role: '',
+    }}
+    for (let i = 1; i < 51; i++) {
+       req.body.nombre = 'test'+[i]; 
+       req.body.email = `test${i}@gmail.com`; 
+       req.body.password = '123456'; 
+       req.body.role = 'USER_ROLE'; 
+        createUsuario(req,res);
+    }
+
+}*/

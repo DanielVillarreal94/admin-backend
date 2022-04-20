@@ -12,7 +12,7 @@ const validarJWT = ( req, res, next ) => {
 
     try {
         const { idUsuario } = jwt.verify( token, process.env.JWT_SECRET); //idUser se lo obtiene del helper jwt.js
-        req.id = idUsuario;
+        req.idAuthenticatedUser = idUsuario;
         next();
         
     } catch (error) {
