@@ -86,7 +86,20 @@ const loginGoogle = async (req, res = response) => {
 }
 
 
+const renewToken = async( req, res = response ) => {
+    const userId = req.idAuthenticatedUser; //id que viene en el middleware de validar-jwt.js
+
+    //Generar el TOKEN - JWT 
+    const token = await generarJWT( userId );
+
+    res.json({
+        ok: true,
+        token
+    });
+}
+
 module.exports = {
     login,
-    loginGoogle
+    loginGoogle,
+    renewToken
 };
