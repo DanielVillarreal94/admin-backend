@@ -7,6 +7,7 @@ const cors = require('cors');
 
 //Conexión a la base de datos
 const { dbConection } = require('./database/config');
+//base de datos
 dbConection();
 
 //Crear servidor de express
@@ -17,6 +18,9 @@ app.use(cors());
 
 // Lectura y parseo del body
 app.use( express.json() );
+
+//Directorio público
+app.use( express.static('public') );
 
 // // Rutas
 app.use( '/api/usuarios', require('./routes/usuarios'));
