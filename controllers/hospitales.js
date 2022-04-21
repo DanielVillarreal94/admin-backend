@@ -29,12 +29,27 @@ const createHospital = async( req, res = response ) => {
     }
 };
 
-const updateHospital = ( req, res = response ) => {
-
+const updateHospital = async( req, res = response ) => {
+    const hospitalId = req.params.id;
+    const usuarioModifica = req.idAuthenticatedUser;
     try {
+
+        const hospitalDB = await Hospital.findById( hospitalId );
+        
+        if ( !hospitalDB ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe hospital con ese id'
+            });
+        }
+
+        const cambiosHospital = { ...req.body , usuario: usuarioModifica }
+        //{ new:true} este parametro va a mostrar la actualización del hospital
+        const hospitalActualizado = await Hospital.findByIdAndUpdate( hospitalId, cambiosHospital, { new:true})
+
         res.json({
             ok: true,
-            msg: 'delete'
+            hospital: hospitalActualizado
         });
     } catch (error) {
         console.log( error );
@@ -45,12 +60,23 @@ const updateHospital = ( req, res = response ) => {
     }
 };
 
-const deleteHospital = ( req, res = response ) => {
-
+const deleteHospital = async ( req, res = response ) => {
+    const hospitalId = req.params.id;
+    
     try {
+        const existHospital = await Hospital.findById( hospitalId );
+        if ( !existHospital ) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe hospital con ese id'
+            });
+        }
+
+        await Hospital.findByIdAndDelete( hospitalId );
+
         res.json({
             ok: true,
-            msg: 'delete'
+            msg: 'El hospital ha sido borrado de la base de datos'
         });
     } catch (error) {
         console.log( error );
