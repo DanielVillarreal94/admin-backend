@@ -11,7 +11,7 @@ const validarJWT = ( req, res, next ) => {
     }
 
     try {
-        const { idUsuario } = jwt.verify( token, process.env.JWT_SECRET); //idUser se lo obtiene del helper jwt.js
+        const { idUsuario } = jwt.verify( token, process.env.JWT_SECRET); //idUsuario se lo obtiene del helper jwt.js
         req.idAuthenticatedUser = idUsuario;
         next();
         
