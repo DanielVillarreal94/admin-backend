@@ -8,7 +8,7 @@ const router = new Router();
 router.use(expressFileUpload());
 
 router.put('/:type/:id',validarJWT, fileUpload );
-router.get('/:type/:nombreArchivo',validarJWT, verArchivo );
+router.get('/:type/:nombreArchivo', verArchivo ); //revisar si necesita (validarJWT)
 
 
 module.exports = router;

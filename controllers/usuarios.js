@@ -96,7 +96,14 @@ const updateUsuario = async ( req, res = response ) => {
         //Se elimina datos que llegan en el request
         // delete paramsUsuario.password; 
         // delete paramsUsuario.google; 
-        paramsUsuario.email = email;
+        if( !existUsuario.google ){
+            paramsUsuario.email = email;
+        } else if ( existUsuario.email !== email){
+            return res.status(400).json({
+                ok: false,
+                msg: 'Los usuarios de google no pueden modificar su correo...'
+            });
+        }
         const usuarioActualido = await Usuario.findByIdAndUpdate( uid, paramsUsuario, { new: true });
 
         res.json({

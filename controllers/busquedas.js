@@ -43,7 +43,7 @@ const getBuscarPorColeccion = async ( req, res = response) => {
             break;
     
         case ('hospitales'):
-            resiult = await Hospital.find({ nombre: regex}).populate('usuario', 'nombre img');
+            result = await Hospital.find({ nombre: regex}).populate('usuario', 'nombre img');
             break;
     
         default:
